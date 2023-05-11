@@ -1,0 +1,206 @@
+{%- if section.settings.background != settings.background and section.settings.background != 'rgba(0,0,0,0)' -%}
+  {%- assign blends_with_background = false -%}
+{%- else -%}
+  {%- assign blends_with_background = true -%}
+{%- endif -%}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+/>
+
+
+<style>
+  #shopify-section-{{ section.id }} {
+    {%- if section.settings.background == 'rgba(0,0,0,0)' -%}
+      {%- assign section_background = settings.background -%}
+    {%- else -%}
+      {%- assign section_background = section.settings.background -%}
+    {%- endif -%}
+
+    {%- if section.settings.text_color == 'rgba(0,0,0,0)' -%}
+      {%- assign heading_color = settings.heading_color -%}
+      {%- assign text_color = settings.text_color -%}
+    {%- else -%}
+      {%- assign heading_color = section.settings.text_color -%}
+      {%- assign text_color = section.settings.text_color -%}
+    {%- endif -%}
+
+    {%- if section.settings.button_background == 'rgba(0,0,0,0)' -%}
+      {%- assign button_background = settings.primary_button_background -%}
+    {%- else -%}
+      {%- assign button_background = section.settings.button_background -%}
+    {%- endif -%}
+
+    {%- if section.settings.button_text_color == 'rgba(0,0,0,0)' -%}
+      {%- assign button_text_color = settings.primary_button_text_color -%}
+    {%- else -%}
+      {%- assign button_text_color = section.settings.button_text_color -%}
+    {%- endif -%}
+
+    --heading-color: {{ heading_color.red }}, {{ heading_color.green }}, {{ heading_color.blue }};
+    --text-color: {{ text_color.red }}, {{ text_color.green }}, {{ text_color.blue }};
+    --primary-button-background: {{ button_background.red }}, {{ button_background.green }}, {{ button_background.blue }};
+    --primary-button-text-color: {{ button_text_color.red }}, {{ button_text_color.green }}, {{ button_text_color.blue }};
+
+    --prev-next-button-background: {{ settings.background.red }}, {{ settings.background.green }}, {{ settings.background.blue }};
+    --prev-next-button-color: {{ settings.text_color.red }}, {{ settings.text_color.green }}, {{ settings.text_color.blue }};
+
+    --section-background: {{ section_background.red }}, {{ section_background.green }}, {{ section_background.blue }};
+    --section-logo-background: {{ section.settings.logo_background.red }} {{ section.settings.logo_background.green }} {{ section.settings.logo_background.blue }} / {{ section.settings.logo_background.alpha }};
+    --section-logo-count: {{ section.blocks.size | default: 6 }};
+  }
+
+  .mySwiper-logo{
+    width:100%;
+  }
+
+  .logo-slide-img{
+    padding:20px;
+    width:100%;
+    height:100%;
+  }
+
+  .swiper-width{
+    display:flex;
+    align-items:center;
+  }
+
+ .mySwiper-logo .swiper-wrapper{
+  transition-timing-function : linear;
+}
+
+</style>
+
+<section class="section {% unless blends_with_background or is_boxed %}section--flush{% endunless %}">
+  <div class="section__color-wrapper">
+    <div class="container {% unless blends_with_background %}vertical-breather{% endunless %}">
+      <header class="section__header text-container">
+        {%- if section.settings.subheading != blank -%}
+          <h2 class="heading heading--small">{{ section.settings.subheading | escape }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.title != blank -%}
+          <h3 class="heading h2">{{ section.settings.title | escape }}</h3>
+        {%- endif -%}
+      </header>
+
+      <div>
+         <div class="swiper mySwiper-logo">
+    <div class="swiper-wrapper swiper-width">
+        {%  for block in section.blocks %}
+          <img class="logo-slide-img swiper-slide" src="{{ block.settings.logo | img_url:"" }}"/>
+
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+     
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script>
+    var swiper = new Swiper(".mySwiper-logo", {
+      spaceBetween: 30,
+      slidesPerView: 3,
+      speed: 5000,
+      loop: true,
+         autoplay: {
+           delay: 1,
+        disableOnInteraction: false,
+      },
+         breakpoints: {
+        280: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 4,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 6,
+          spaceBetween: 50,
+        },
+      },
+   
+    });
+  </script>
+
+{% schema %}
+{
+  "name": "Also Available",
+  "settings": [
+
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Brands"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "rgba(0,0,0,0)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Logo",
+      "type": "logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Image",
+          "info": "450 x 150px .png recommended"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Also Available",
+      "blocks": [
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
